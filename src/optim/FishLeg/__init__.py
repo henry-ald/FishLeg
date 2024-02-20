@@ -7,5 +7,6 @@ FISH_LAYERS = {"linear": FishLinear}
 FISH_LIKELIHOODS = {
     "gaussian": GaussianLikelihood,
     "bernoulli": BernoulliLikelihood,
+    "bernoulli_yolo": BernoulliLikelihood_yolo,
     "softmax": SoftMaxLikelihood,
 }
