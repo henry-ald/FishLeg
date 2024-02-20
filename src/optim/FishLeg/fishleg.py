@@ -175,7 +175,7 @@ class FishLeg(Optimizer):
         """
         self.aux_opt.zero_grad()
 
-        data_x, _ = next(iter(self.aux_dataloader))
+        data_x = next(iter(self.aux_dataloader))[0]
 
         group = self.param_groups[0]
         damping = group["damping"]
