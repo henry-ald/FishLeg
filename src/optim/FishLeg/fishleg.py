@@ -113,6 +113,8 @@ class FishLeg(Optimizer):
         self.aux_log = aux_log
         self.aux_loss = None
         self.device = device
+        self.aux_log = aux_log
+        self.aux_loss = None
 
         defaults = dict(
             lr=lr,
@@ -173,7 +175,7 @@ class FishLeg(Optimizer):
         """
         self.aux_opt.zero_grad()
 
-        data_x, _ = next(iter(self.aux_dataloader))
+        data_x = next(iter(self.aux_dataloader))[0]
 
         group = self.param_groups[0]
         damping = group["damping"]
