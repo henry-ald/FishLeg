@@ -192,7 +192,7 @@ class FishLeg(Optimizer):
             if u_sampling == "gradient":
                 return g
             elif u_sampling == "gaussian":
-                return torch.randn(size=g.shape)
+                return torch.randn(size=g.shape, device=self.device)
             else:
                 raise NotImplementedError(
                     f"{u_sampling} method of sampling u not implemented yet!"
