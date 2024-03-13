@@ -33,7 +33,7 @@ class BernoulliLikelihood_yolo(FishLikelihoodBase):
 
     def _get_preds(self, preds: torch.Tensor) -> torch.Tensor:
         # preds is a list of length 2
-        # preds[0] is a 3-D tensor: [batch_size; sum of (no. anchor sizes * no. of grid rows * no. of grid cols ); [x ,y , width, height, class, confidences]]
+        # preds[0] is a 3-D tensor: [batch_size; sum of (no. anchor sizes * no. of grid rows * no. of grid cols ); [x ,y , width, height, obj_score, cls_score]]
         # we want the confidences from the third axis of preds[0]. this is of length no. of classes
         # preds[1] provides the same info, except in the form of 3 5-D tensors that indexes preds[0] by grid position
         indices = torch.tensor([i for i in range(5, preds[0].shape[2])]).to(self.device) # 1-D tensor of indices corresponding to confidences in preds[0]
