@@ -29,6 +29,8 @@ class Likelihood_yolo(FishLikelihoodBase):
         self.init = 0
 
     def nll(self, preds: torch.Tensor, observations: torch.Tensor) -> torch.Tensor:
+        preds = self._get_preds(preds)
+
         if self.init == 0:
             exec(f"from .yolo.{self.version} import ComputeLoss") # Import correct version of YOLO ComputeLoss()
             exec("self.compute_loss = ComputeLoss(self.model)")
@@ -37,21 +39,16 @@ class Likelihood_yolo(FishLikelihoodBase):
         return loss
 
     def draw(self, preds: torch.Tensor) -> torch.Tensor:
-    
+        preds = self._get_preds(preds)
+
         # Sample bounding box
         sigma = 0.2 # Some small amount
         sample = Normal(torch.tensor([0.0]), torch.tensor([sigma]))
         preds[..., :4] = preds[..., :4] + sample
 
-        # Sample object confidence
-        objpred = torch.index_select(preds, 4, 4)
-        sample = Bernoulli(objpred).sample()
-        preds[..., 4] = sample
-        
-        # Sample class confidences
-        clsidx = torch.tensor([i for i in range(5, preds.shape[4])]).to(self.device) # 1-D tensor of indices corresponding to confidences in preds[0]
-        clspred = torch.index_select(preds[0], 2, clsidx) # get the confidences
-        sample = Bernoulli(clspred).sample()
-        preds[..., 5:] = sample
+    
+    def _get_preds(self, preds: torch.Tensor) -> torch.Tensor:
+        if self.version == "v5":
+            return preds[1]
         return preds
 
