@@ -9,4 +9,5 @@ FISH_LIKELIHOODS = {
     "bernoulli": BernoulliLikelihood,
     "bernoulli_yolo": BernoulliLikelihood_yolo,
     "softmax": SoftMaxLikelihood,
+    "yolo": Likelihood_yolo
 }
