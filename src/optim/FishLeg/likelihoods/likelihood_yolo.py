@@ -25,18 +25,21 @@ class Likelihood_yolo(FishLikelihoodBase):
         self.device = device
         self.model = model
         self.version = version
-        
-        exec(f"from .yolo.{self.version} import ComputeLoss") # Import correct version of YOLO ComputeLoss()
-        exec("self.compute_loss = ComputeLoss(self.model)") 
+        self.compute_loss = None
+        self.init = 0
 
     def nll(self, preds: torch.Tensor, observations: torch.Tensor) -> torch.Tensor:
+        if self.init == 0:
+            exec(f"from .yolo.{self.version} import ComputeLoss") # Import correct version of YOLO ComputeLoss()
+            exec("self.compute_loss = ComputeLoss(self.model)")
+            n += 1
         loss, _ = self.compute_loss(preds, observations) # Computes loss using YOLO loss function
         return loss
 
     def draw(self, preds: torch.Tensor) -> torch.Tensor:
     
         # Sample bounding box
-        sigma = 0.3 # Some small amount
+        sigma = 0.2 # Some small amount
         sample = Normal(torch.tensor([0.0]), torch.tensor([sigma]))
         preds[..., :4] = preds[..., :4] + sample
 
