@@ -7,7 +7,7 @@ from .likelihood_yolo import *
 from .yolo import v5, v7, v7u6
 
 YOLO_VERSION = {
-    "v5" : v5,
-    "v7" : v7,
-    "v7u6": v7u6
+    "yolov5" : v5,
+    "yolov7" : v7,
+    "yolov7u6": v7u6
 }
