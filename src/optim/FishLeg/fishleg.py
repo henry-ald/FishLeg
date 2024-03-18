@@ -86,8 +86,8 @@ class FishLeg(Optimizer):
     def __init__(
         self,
         model: nn.Module,
-        aux_dataloader: torch.utils.data.DataLoader,
-        likelihood: FishLikelihoodBase,
+        aux_dataloader: torch.utils.data.DataLoader = None,
+        likelihood: FishLikelihoodBase = None,
         lr: float = 5e-2,
         beta: float = 0.9,
         weight_decay: float = 1e-5,
@@ -141,8 +141,8 @@ class FishLeg(Optimizer):
             if isinstance(param, FishAuxParameter)
         ]
 
-        if len(self.likelihood.get_parameters()) > 0:
-            aux_params.extend(self.likelihood.get_aux_parameters())
+        # if len(self.likelihood.get_parameters()) > 0:
+        #     aux_params.extend(self.likelihood.get_aux_parameters())
 
         self.aux_opt = Adam(
             aux_params,
@@ -173,6 +173,11 @@ class FishLeg(Optimizer):
         where :math:`\\theta` is the parameters of model, :math:`\lambda` is the
         auxliarary parameters.
         """
+        if self.aux_dataloader == None:
+            raise AttributeError("FishLeg.aux_dataloader has not been specified!")
+        if self.likelihood == None:
+            raise AttributeError("FishLeg.likelihood has not been specified!")
+
         self.aux_opt.zero_grad()
 
         data_x = next(iter(self.aux_dataloader))[0]
