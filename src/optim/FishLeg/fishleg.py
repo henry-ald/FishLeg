@@ -179,8 +179,8 @@ class FishLeg(Optimizer):
             raise AttributeError("FishLeg.likelihood has not been specified!")
 
         self.aux_opt.zero_grad()
-
-        data_x = next(iter(self.aux_dataloader))[0]
+        
+        data_x = next(iter(self.aux_dataloader))[0].float()
 
         group = self.param_groups[0]
         damping = group["damping"]
