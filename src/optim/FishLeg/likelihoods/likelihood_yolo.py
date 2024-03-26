@@ -71,9 +71,4 @@ class Likelihood_yolo(FishLikelihoodBase):
         preds[..., 5:] = sample
 
         return preds
-    
-    def _get_preds(self, preds: torch.Tensor) -> torch.Tensor:
-        if self.version == "v5":
-            return preds[1]
-        return preds
 
