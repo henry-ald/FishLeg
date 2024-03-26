@@ -31,9 +31,8 @@ class Likelihood_yolo(FishLikelihoodBase):
         return loss
 
     def draw(self, preds: torch.Tensor) -> torch.Tensor:
-        #preds = self._get_preds(preds)
-
-        if self.imp.de_parallel(self.model).model[-1] == len(preds): # i.e. for v7 output format
+        # TODO: Make more robust for other yolo formats
+        if len(preds) == 3: # i.e. for v7 output format
             for i, pi in enumerate(preds):
                 preds[i] = self._sample(preds[i])
         else: # i.e. for v5 output format
