@@ -189,6 +189,7 @@ class FishLeg(Optimizer):
         precondition_aux = group["precondition_aux"]
         u_sampling = group["u_sampling"]
 
+        self.model.eval()
         pred_y = self.model(data_x.to(self.device))
         with torch.no_grad():
             samples_y = self.likelihood.draw(pred_y)
@@ -253,6 +254,7 @@ class FishLeg(Optimizer):
             _augment_params_by(-2 * eps)
 
             pred_y = self.model(data_x.to(self.device))
+            self.model.train()
             minus_loss = self.likelihood.nll(pred_y, samples_y)
 
             minus_grad = torch.autograd.grad(
