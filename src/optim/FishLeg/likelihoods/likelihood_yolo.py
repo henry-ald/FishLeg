@@ -23,10 +23,8 @@ class Likelihood_yolo(FishLikelihoodBase):
 
     def __init__(self, model: nn.Module, version, device: str = "cpu") -> None:
         self.device = device
-        self.model = model
-        self.imp = version
-        self.init = 0
-        self.compute_loss = self.imp.ComputeLoss(model)
+        self.imported_functions = version
+        self.compute_loss = self.imported_functions.ComputeLoss(model)
 
     def nll(self, preds: torch.Tensor, observations: torch.Tensor) -> torch.Tensor:
         loss, _ = self.compute_loss(preds[1], observations) # Computes loss using YOLO loss function
@@ -41,7 +39,7 @@ class Likelihood_yolo(FishLikelihoodBase):
         else: # i.e. for v5 output format
             preds = self._sample(preds[0])
         
-        preds = self.imp.non_max_suppression(preds)
+        preds = self.imported_functions.non_max_suppression(preds)
 
         for i, _ in enumerate(preds):
             idx = torch.tensor([2,3,4,5,0,1], device=self.device) # send final two cols to first two, shift first 4 along
@@ -49,7 +47,7 @@ class Likelihood_yolo(FishLikelihoodBase):
             new = torch.zeros(preds[i].shape, device=self.device)
             new.scatter_(1, idx, preds[i])
             preds[i] = new
-            preds[i][:, 2:] = self.imp.xyxy2xywhn(preds[i][:, 2:]) # Convert coords from xyxy to xywh normalised by img size
+            preds[i][:, 2:] = self.imported_functions.xyxy2xywhn(preds[i][:, 2:]) # Convert coords from xyxy to xywh normalised by img size
         
         preds = torch.cat(preds, dim=0)
         return preds
