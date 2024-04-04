@@ -442,10 +442,12 @@ class FishLeg(Optimizer):
 
                 # This is for updating non-FishLeg layers - do we want this/needs checking.
                 elif not isinstance(module, nn.Sequential) and not isinstance(
-                    module, nn.ParameterDict
-                ):
+                    module, nn.ParameterDict) and (module.__class__.__name__ != "Model") and (module.__class__.__name__ != "Conv") and (module.__class__.__name__ != "IDetect") and not isinstance(
+                        module, nn.modules.container.ModuleList):
+                    # print(type(module))
+                    # print(module.__class__.__name__)
                     for n, (_, param) in enumerate(module.named_parameters()):
-                        if not isinstance(param, FishAuxParameter):
+                        if param.grad is not None:
                             grad = grads[p_idx]
                             exp_avg = exp_avgs[p_idx]
                             state_steps[p_idx] += 1
